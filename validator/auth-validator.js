@@ -15,7 +15,12 @@ import z from 'zod'
 
 // Creating an object schema
  export  const signupSchema = loginSchema.extend({
-  username: z
+  firstname: z
+    .string({ required_error: "Name is required" })
+    .trim()
+    .min(6, { message: "Name must be at lest of 3 chars. " })
+    .max(255, { message: "Name must not be more than 255 characters" }),
+    firstname: z
     .string({ required_error: "Name is required" })
     .trim()
     .min(6, { message: "Name must be at lest of 3 chars. " })

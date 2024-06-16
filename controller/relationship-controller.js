@@ -1,4 +1,4 @@
-import pool  from "../utils/db";
+import pool from "../utils/db.js";
 import jwt from "jsonwebtoken";
 export const getFollowersInfo = async (req, res) => {
     const q = "SELECT followerUserId FROM followersInfo WHERE followedUserId = ?";

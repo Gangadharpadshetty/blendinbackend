@@ -2,18 +2,21 @@ import pool from "../utils/db.js";
 import jwt from "jsonwebtoken";
 import moment from "moment";
 
-export const getComments = async(req, res) => {
-  const q = `SELECT c.*, u.id AS userId, username, profilePic FROM comments AS c JOIN users AS u ON (u.id = c.userId)
-    WHERE c.postId = ? ORDER BY c.createdAt DESC
-    `;
+
+
+export const getComments = async (req, res) => {
+  const q = `SELECT c.*, u.id AS userId,  CONCAT(u.firstname, ' ', u.lastname) AS username, profilePic 
+             FROM comments AS c 
+             JOIN users AS u ON (u.id = c.userId)
+             WHERE c.postId = ? 
+             ORDER BY c.createdAt DESC`;
 
   try {
-    await pool.query(q, [req.query.postId], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json(data);
-    });
+    const [data] = await pool.query(q, [req.query.postId]);
+    return res.status(200).json(data);
   } catch (err) {
-    return res.status(500).json({message:error.message});
+    console.error('Error executing query:', err);
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -21,8 +24,9 @@ export const getComments = async(req, res) => {
 
 
 
+
 export const addComment = (req, res) => {
-  const token = req.cookies.accessToken;
+  const token = req.header.authorization;
   if (!token) return res.status(401).json("Not logged in!");
 
   jwt.verify(token, "secretkey", (err, userInfo) => {

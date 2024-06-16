@@ -5,7 +5,7 @@ import {generateToken} from'../middlewares/auth-middleware.js';
 
 
 export const registration = async (req, res) => {
-    const { username, email, password, phone } = req.body;
+    const { firstname,lastname, email, password, phone ,location} = req.body;
 
     try {
         // CHECK IF USER ALREADY EXISTS
@@ -21,8 +21,8 @@ export const registration = async (req, res) => {
         const hashedPassword = bcrypt.hashSync(password, salt);
 
         // INSERT NEW USER INTO DATABASE
-        const insertUserQuery = 'INSERT INTO users (username, email, password, phone) VALUES (?, ?, ?, ?)';
-        const values = [username, email, hashedPassword, phone];
+        const insertUserQuery = 'INSERT INTO users (firstname,lastname, email, password, phone,location) VALUES (?, ?, ?, ?,?,?)';
+        const values = [firstname,lastname, email, hashedPassword, phone,location];
 
         await pool.query(insertUserQuery, values);
 
